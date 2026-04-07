@@ -1,0 +1,59 @@
+# This custom SCC provides two things over the standard restricted-v2 SCC.
+# It was created by taking the restricted-v2 definition, and changing 3
+# properties, which are the first three after metadata: in this manifest.
+
+apiVersion: security.openshift.io/v1
+kind: SecurityContextConstraints
+metadata:
+  name: network-raw
+  labels:
+    day: day1
+    sample: customscc
+  annotations:
+    kubernetes.io/description: |
+      network-raw adds the NET_RAW capability, and the ability to run as root,
+      on top the restricted-v2 SCC.
+# This adds the capability we need
+allowedCapabilities:
+- NET_BIND_SERVICE
+- NET_RAW
+# This allows running as any UID, including 0.
+# Usually, you need to run as root to use NET_RAW.
+runAsUser:
+  type: RunAsAny
+# This ensures that the SCC doesn't get overriden by more restrictive 
+# policies. If you do not provide this priority, restricted-v2 may be
+# applied even if you include a permitted serviceaccount.
+priority: 10
+allowHostDirVolumePlugin: false
+allowHostIPC: false
+allowHostNetwork: false
+allowHostPID: false
+allowHostPorts: false
+allowPrivilegeEscalation: false
+allowPrivilegedContainer: false
+defaultAddCapabilities:
+fsGroup:
+  type: MustRunAs
+groups: []
+readOnlyRootFilesystem: false
+requiredDropCapabilities:
+- ALL
+seLinuxContext:
+  type: MustRunAs
+seccompProfiles:
+- runtime/default
+supplementalGroups:
+  type: RunAsAny
+userNamespaceLevel: AllowHostLevel
+users: []
+volumes:
+- configMap
+- csi
+- downwardAPI
+- emptyDir
+- ephemeral
+- image
+- persistentVolumeClaim
+- projected
+- secret

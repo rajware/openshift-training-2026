@@ -1,0 +1,47 @@
+# This deployment represents an application that needs more capabilities than
+# are provided by the standard OpenShift SCCs. In this case, the application
+# is tcpdump, which requires the NET_RAW capability. It also needs to run as
+# UID 0. The deployment sets these properties. It also sets a serviceaccount
+# which should be given access to a custom SCC which adds the NET_RAW 
+# capability, and the ability to run as UID 0.
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: network-raw-sa
+  labels:
+    day: day1
+    sample: customscc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tcpdump-dep
+  labels:
+    day: day1
+    sample: customscc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      day: day1
+      sample: customscc
+      layer: tcpdump-dep
+  template:
+    metadata:
+      labels:
+        day: day1
+        sample: customscc
+        layer: tcpdump-dep
+    spec:
+      serviceAccountName: network-raw-sa
+      containers:
+        - name: tcpdump
+          image: quay.io/rajware/alpine-tools:latest
+          command: ["sh", "-c", "apk update && apk add tcpdump && tcpdump -i eth0 -vv -l"]
+          securityContext:
+            capabilities:
+              add:
+                - NET_RAW
+      securityContext:
+        runAsUser: 0
