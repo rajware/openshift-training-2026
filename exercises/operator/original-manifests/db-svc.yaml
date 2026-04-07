@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: db-svc
+  labels:
+    day: day3
+    sample: dbapp
+spec:
+  type: ClusterIP
+  selector:
+    day: day3
+    sample: dbapp
+    layer: backend
+  ports:
+    - name: mysql
+      port: 3306

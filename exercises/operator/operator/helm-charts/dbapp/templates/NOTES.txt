@@ -1,0 +1,17 @@
+Adminer and MySQL have been installed.
+
+{{- if .Values.serviceAccountName }}
+If not already done, please ask your cluster manager to provide anyUID SCC access
+to the service account {{ .Release.Name }}-dbapp-sa in the {{ .Release.Namespace}} namespace.
+
+  oc adm policy add-scc-to-user anyuid \
+                                -z {{ .Release.Name }}-dbapp-sa \
+                                -n {{ .Release.Namespace}}
+{{- else }}
+If the account {{ .Values.serviceAccountName }} does not have access to the anyUID SCC,
+please ask your cluster administrator to provide it.
+{{- end }}
+
+Then, restart the backend by running:
+
+  oc rollout restart deployment {{ .Release.Name}}-db-dep -n {{ .Release.Namespace }}

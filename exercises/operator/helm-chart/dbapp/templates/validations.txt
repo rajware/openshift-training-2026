@@ -1,0 +1,12 @@
+{{- if not .Values.host -}}
+{{- fail "Release failed: must specify a fully qualified host name" -}}
+{{- end }}
+{{- if .Values.db.secretName }}
+{{- if not .Values.db.secretKey }}
+{{- fail "Release failed: must specify a secret name and a secret key" -}}
+{{- end }}
+{{- else }}
+{{- if not .Values.db.rootPassword }}
+{{- fail "Release failed: must specify either a secret name and a secret key, or a root password" -}}
+{{- end }}
+{{- end }}

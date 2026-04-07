@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-fe-dep
+  labels:
+    day: day4
+    sample: dbapp
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      day: day4
+      sample: dbapp
+      layer: frontend
+      app.kubernetes.io/name: {{ .Chart.Name }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        day: day4
+        sample: dbapp
+        layer: frontend
+        app.kubernetes.io/name: {{ .Chart.Name }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: webserver
+          image: adminer:4-standalone
+          env:
+            - name: ADMINER_DEFAULT_SERVER
+              value: {{ .Release.Name }}-db-svc

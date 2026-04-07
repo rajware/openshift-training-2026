@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: db-sa
+  labels:
+    day: day3
+    sample: dbapp-openshift

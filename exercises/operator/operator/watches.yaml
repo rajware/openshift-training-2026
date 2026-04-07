@@ -1,0 +1,6 @@
+# Use the 'create api' subcommand to add watches to this file.
+- group: apps.rwsl.in
+  version: v1beta1
+  kind: DbApp
+  chart: helm-charts/dbapp
+# +kubebuilder:scaffold:watch

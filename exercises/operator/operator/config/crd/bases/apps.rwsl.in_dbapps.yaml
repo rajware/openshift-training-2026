@@ -1,0 +1,87 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: dbapps.apps.rwsl.in
+spec:
+  group: apps.rwsl.in
+  names:
+    kind: DbApp
+    listKind: DbAppList
+    plural: dbapps
+    singular: dbapp
+  scope: Namespaced
+  versions:
+  - name: v1beta1
+    schema:
+      openAPIV3Schema:
+        description: DbApp is the Schema for the dbapps API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: Spec defines the desired state of DbApp
+            type: object
+            properties:
+              db:
+                description: 'db contains backend related properties'
+                type: object
+                properties:
+                  storageSize:
+                    description: 'storageSize sets the minimum storage size for the database server'
+                    type: string
+                    pattern: "^[0-9]+Gi$"
+                  storageClass:
+                    description: 'storageClass is the storage class for the database storage PVC'
+                    type: string
+                  rootPassword:
+                    description: 'rootPassword is the password of the root user of MySQL. You must either provide this, or secretName and secretKey'
+                    type: string
+                  secretName:
+                    description: 'secretName is the name of a pre-existing secret object, from which the root user password will be read'
+                    type: string
+                  secretKey:
+                    description: 'secretKey is a key of a pre-existing secret object, from which the root user password will be read'
+                    type: string
+              host:
+                description: 'host is the fully qualified hostname where the front end can be accessed'
+                type: string
+              serviceAccountName:
+                description: 'serviceAccountName is the name of a pre-existing service account. It should have access to the anyuid SCC'
+                type: string
+            required:
+              - "host"
+            x-kubernetes-preserve-unknown-fields: true
+          status:
+            description: Status defines the observed state of DbApp
+            type: object
+            x-kubernetes-preserve-unknown-fields: true
+        type: object
+    additionalPrinterColumns:
+      - name: host
+        type: string
+        jsonPath: .spec.host
+        description: the fully qualified hostname where the front end can be accessed
+        priority: 0
+      - name: deployed
+        type: string
+        jsonPath: .status.conditions[?(@.type=="Deployed")].status
+        priority: 0
+      - name: error
+        type: string
+        jsonPath: .status.conditions[?(@.type=="ReleaseFailed")].message
+        priority: 1
+    served: true
+    storage: true
+    subresources:
+      status: {}

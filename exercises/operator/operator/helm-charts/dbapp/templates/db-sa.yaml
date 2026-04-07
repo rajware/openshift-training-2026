@@ -1,0 +1,11 @@
+{{- if not .Values.serviceAccountName }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ .Release.Name }}-db-sa
+  labels:
+    day: day4
+    sample: dbapp
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+{{ end }}

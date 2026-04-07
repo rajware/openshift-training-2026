@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-db-dep
+  labels:
+    day: day4
+    sample: dbapp
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      day: day4
+      sample: dbapp
+      layer: backend
+      app.kubernetes.io/name: {{ .Chart.Name }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        day: day4
+        sample: dbapp
+        layer: backend
+        app.kubernetes.io/name: {{ .Chart.Name }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      {{- if .Values.serviceAccountName }}
+      serviceAccountName: {{ .Values.serviceAccountName }}
+      {{- else }}
+      serviceAccountName: {{ .Release.Name }}-db-sa
+      {{- end }}
+      volumes:
+        - name: dbvol
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-db-pvc
+      containers:
+        - name: database
+          image: mysql:8
+          volumeMounts:
+            - name: dbvol
+              mountPath: /var/lib/mysql
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              {{- if .Values.db.secretName }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.db.secretName }}
+                  key: {{ .Values.db.secretKey }}
+              {{- else }}
+              value: {{ .Values.db.rootPassword }}
+              {{- end }}

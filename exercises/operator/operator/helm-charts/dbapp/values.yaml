@@ -1,0 +1,22 @@
+# Default values for dbapp.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# This section contains database-related variables
+db:
+  # This sets the minimum storage size for the database server
+  storageSize: 1Gi
+  # This is the storage class to be used
+  storageClass:
+  # This is the password for the root user
+  rootPassword:
+  # This is the name of a secret from where the password can be read
+  secretName:
+  # This is the key in the secret from where the password can be read
+  secretKey:
+
+# This is the hostname used to access the front end
+host:
+
+# This is the name of a pre-existing service Account that will be used for the backend pod
+serviceAccountName:

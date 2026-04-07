@@ -1,0 +1,6 @@
+apiVersion: v2
+appVersion: MySQL:8, Adminer:14
+description: A Helm chart for installing MySQL + Adminer on Kubernetes
+name: dbapp
+type: application
+version: 0.1.0

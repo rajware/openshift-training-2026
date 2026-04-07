@@ -1,0 +1,16 @@
+apiVersion: apps.rwsl.in/v1beta1
+kind: DbApp
+metadata:
+  name: dbapp-sample
+spec:
+  # Default values copied from <project_dir>/helm-charts/dbapp/values.yaml
+  db:
+    rootPassword: null
+    secretKey: null
+    secretName: null
+    storageClass: null
+    storageSize: 1Gi
+  host: null
+  serviceAccountName: null
+  
+  

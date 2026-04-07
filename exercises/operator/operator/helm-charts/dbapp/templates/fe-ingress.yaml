@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}-fe-ingress
+  labels:
+    day: day4
+    sample: dbapp
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  rules:
+    - host: {{ .Values.host }} # In this training, use any unique name ending in .custom.rwsl.in
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Release.Name }}-fe-svc
+                port:
+                  number: 8080
+  # tls:
+  #   - hosts:
+  #       - whatever.custom.rwsl.in # In this training, use any unique name ending in .custom.rwsl.in
+  #     secretName: webapp-tls # Secret obtained via certificate object
+  

@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fe-dep
+  labels:
+    day: day3
+    sample: dbapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      day: day3
+      sample: dbapp
+      layer: frontend
+  template:
+    metadata:
+      labels:
+        day: day3
+        sample: dbapp
+        layer: frontend
+    spec:
+      containers:
+        - name: webserver
+          image: adminer:4-standalone
+          env:
+            - name: ADMINER_DEFAULT_SERVER
+              value: db-svc

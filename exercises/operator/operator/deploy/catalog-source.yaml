@@ -1,0 +1,10 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: dbapp-catalog
+  namespace: openshift-marketplace
+spec:
+  sourceType: grpc
+  image: quay.io/rajware/dbapp-operator-catalog:v0.1.0
+  displayName: Rajware OpenShift Training Catalog
+  publisher: Rajware

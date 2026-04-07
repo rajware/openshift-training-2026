@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-dep
+  labels:
+    day: day3
+    sample: dbapp-openshift
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      day: day3
+      sample: dbapp-openshift
+      layer: backend
+  template:
+    metadata:
+      labels:
+        day: day3
+        sample: dbapp-openshift
+        layer: backend
+    spec:
+      serviceAccountName: db-sa
+      volumes:
+        - name: dbvol
+          persistentVolumeClaim:
+            claimName: db-pvc
+      containers:
+        - name: database
+          image: mysql:8
+          volumeMounts:
+            - name: dbvol
+              mountPath: /var/lib/mysql
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: something
