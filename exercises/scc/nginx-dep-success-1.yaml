@@ -1,0 +1,63 @@
+# This deployment will work in any regular OpenShift project/namespace
+# because the Red Hat UBI nginx image can run with any random UID, and
+# listens on port 8080 by default. This fits the default restricted-v2
+# SCC.
+# But this image does not have a default entrypoint that serves a page
+# , so we have to mount content at /opt/app-root/src, and invoke nginx
+# ourselves. The image includes a script at /usr/libexec/s2i/run which
+# does this correctly, setting up permissions and logs.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-dep-success-1
+  labels:
+    day: day1
+    sample: scc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      day: day1
+      sample: scc
+      layer: nginx-dep-success-1
+  template:
+    metadata:
+      labels:
+        day: day1
+        sample: scc
+        layer: nginx-dep-success-1
+    spec:
+      volumes:
+        - name: homepagevol
+          configMap:
+            name: nginx-homepage
+            key: index.html
+      containers:
+        - name: nginx
+          image: registry.access.redhat.com/ubi9/nginx-126:9.7
+          command: ["/usr/libexec/s2i/run"]
+          volumeMounts:
+            - name: homepagevol
+              mountPath: /opt/app-root/src/index.html
+              subPath: index.html
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-homepage
+  labels:
+    day: day1
+    sample: scc
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Document</title>
+    </head>
+    <body>
+        <h1>Hello from Nginx</h1>
+        <p>If you can see this page, nginx is working normally.</p>
+    </body>
+    </html>

@@ -1,0 +1,32 @@
+# This deployment will fail in any regular OpenShift project/namespace
+# because the Docker official nginx image insists on running with UID
+# 0, and listens on port 80. The restricted-v2 SCC, which is applied
+# by default, requires containers to run with a random UID, and drops
+# all capabilities including NET_BIND_SERVICE which is required to 
+# listen on ports below 1024.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-dep-fail
+  labels:
+    day: day1
+    sample: scc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      day: day1
+      sample: scc
+      layer: nginx-dep-fail
+  template:
+    metadata:
+      labels:
+        day: day1
+        sample: scc
+        layer: nginx-dep-fail
+    spec:
+      containers:
+        - name: nginx
+          image: docker.io/library/nginx:alpine
+

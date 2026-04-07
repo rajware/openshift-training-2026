@@ -1,0 +1,43 @@
+# This deployment will work in any regular OpenShift project/namespace
+# if a service account in that namespace, called anyuid-sa is provided
+# access to the SCC called anyuid. AnyUID allows a container to run as
+# any UID including 0. It also adds the NET_BIND_SERVICE capability by
+# default, so  Docker official nginx image will run fine on port 80.
+#
+# Use the following command (run as a cluster admin):
+#   oc adm policy add-scc-to-user anyuid -z anyuid-sa -n NAMESPACE
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-dep-success-2
+  labels:
+    day: day1
+    sample: scc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      day: day1
+      sample: scc
+      layer: nginx-dep-success-2
+  template:
+    metadata:
+      labels:
+        day: day1
+        sample: scc
+        layer: nginx-dep-success-2
+    spec:
+      serviceAccountName: anyuid-sa
+      containers:
+        - name: nginx
+          image: docker.io/library/nginx:alpine
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: anyuid-sa
+  labels:
+    day: day1
+    sample: scc
