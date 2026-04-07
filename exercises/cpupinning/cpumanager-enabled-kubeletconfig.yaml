@@ -1,0 +1,16 @@
+apiVersion: machineconfiguration.openshift.io/v1
+kind: KubeletConfig
+metadata:
+  name: cpumanager-enabled
+  labels:
+    day: day2
+    sample: cpupinning
+spec:
+  machineConfigPoolSelector:
+    matchLabels:
+      day: day2
+      sample: cpupinning
+  kubeletConfig:
+    cpuManagerPolicy: static # Enables CPU pinning (exclusive cores for pods)
+    cpuManagerReconcilePeriod: 5s
+    reservedSystemCPUs: "0,1" # Reserve CPU 0 and 1 for host processes, OS, and Kubelet

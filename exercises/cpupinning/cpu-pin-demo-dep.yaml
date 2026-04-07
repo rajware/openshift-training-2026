@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cpu-pin-demo
+  labels:
+    day: day2
+    sample: cpupinning
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      day: day2
+      sample: cpupinning
+      layer: cpu-pin-demo
+  template:
+    metadata:
+      labels:
+        day: day2
+        sample: cpupinning
+        layer: cpu-pin-demo
+    spec:
+      nodeSelector:
+        cpumanager: "true" # Schedule only on nodes in our CPU-managed pool
+      containers:
+      - name: stress-ng
+        # image: docker.io/library/alpine:3.23.3
+        image: quay.io/rajware/alpine-tools:latest
+        command: ["sh", "-c", "sleep infinite"]
+        resources:
+          limits:
+            cpu: "1"        # MUST be an integer to trigger exclusive core allocation
+            memory: "256Mi"
+          requests:
+            cpu: "1"        # MUST match limits to achieve Guaranteed QoS
+            memory: "256Mi" # MUST match limits to achieve Guaranteed QoS
