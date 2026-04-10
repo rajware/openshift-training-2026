@@ -1,0 +1,23 @@
+# Note: By NOT including an IPv4 ipBlock allow rule,
+# and because NetworkPolicy is an "isolated" model,
+# all IPv4 traffic not explicitly allowed is dropped.
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ipv6-only
+  labels:
+    day: day2
+    sample: dualstack  
+spec:
+  podSelector:
+    matchLabels:
+      day: day2
+      sample: dualstack
+      layer: echo-server
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - ipBlock:
+            cidr: ::/0 # Allow all IPv6

@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client
+  labels:
+    day: day2
+    sample: dualstack
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      day: day2
+      sample: dualstack
+      layer: client
+  template:
+    metadata:
+      labels:
+        day: day2
+        sample: dualstack
+        layer: client
+    spec:
+      containers:
+      - name: client
+        image: quay.io/rajware/alpine-tools:latest
+        command: ["sh", "-c", "sleep infinite"]

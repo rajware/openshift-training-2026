@@ -23,7 +23,6 @@ spec:
         cpumanager: "true" # Schedule only on nodes in our CPU-managed pool
       containers:
       - name: stress-ng
-        # image: docker.io/library/alpine:3.23.3
         image: quay.io/rajware/alpine-tools:latest
         command: ["sh", "-c", "sleep infinite"]
         resources:

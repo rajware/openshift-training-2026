@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: echo-server
+  labels:
+    day: day2
+    sample: dualstack
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      day: day2
+      sample: dualstack
+      layer: echo-server
+  template:
+    metadata:
+      labels:
+        day: day2
+        sample: dualstack
+        layer: echo-server
+    spec:
+      containers:
+        - name: echo-server
+          image: quay.io/rajch/ttws:0.3.0
